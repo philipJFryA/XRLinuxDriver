@@ -1,5 +1,4 @@
 #include "devices.h"
-#include "features/breezy_desktop.h"
 #include "logging.h"
 #include "plugins.h"
 #include "plugins/breezy_desktop.h"
@@ -26,7 +25,6 @@
 
 const char* shared_mem_directory = "/dev/shm";
 const char* shared_mem_filename = "breezy_desktop_imu";
-const int breezy_desktop_feature_count = 1;
 static bool has_started = false;
 static pthread_mutex_t file_mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -68,7 +66,7 @@ void breezy_desktop_handle_config_line_func(void* config, char* key, char* value
     breezy_desktop_config* temp_config = (breezy_desktop_config*) config;
 
     if (equal(key, "external_mode")) {
-        temp_config->enabled = list_string_contains("breezy_desktop", value) && is_productivity_granted();
+        temp_config->enabled = true;
     } else if (equal(key, "display_distance")) {
         float_config(key, value, &temp_config->display_distance);
     } else if (equal(key, "display_size")) {
@@ -288,8 +286,7 @@ void breezy_desktop_set_config_func(void* new_config) {
 void breezy_desktop_handle_pose_data_func(imu_pose_type pose, imu_euler_type velocities, bool imu_calibrated, ipc_values_type *ipc_values) {
     if (bd_config && bd_config->enabled) {
         if (imu_calibrated && ipc_values) {
-            breezy_desktop_write_pose_data(ipc_values->pose_orientation, 
-                is_productivity_pro_granted() ? ipc_values->pose_position : &POSITION_RESET[0]);
+            breezy_desktop_write_pose_data(ipc_values->pose_orientation, ipc_values->pose_position);
         } else {
             breezy_desktop_reset_pose_data_func();
         }

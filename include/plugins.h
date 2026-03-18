@@ -46,8 +46,6 @@ struct plugin_t {
     handle_state_func handle_state;
     handle_device_connect_func handle_device_connect;
     handle_device_disconnect_func handle_device_disconnect;
-
-    // TODO handle feature access change
 };
 typedef struct plugin_t plugin_type;
 

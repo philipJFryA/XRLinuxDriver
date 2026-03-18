@@ -81,8 +81,6 @@ process_config() {
     local type="$4"
     local key2="$5"
     local value2="$6"
-    local token_action="$7"
-    local token_arg="$8"
 
     ensure_config_file "$file"
 
@@ -96,35 +94,6 @@ process_config() {
 
     local read_value
     read_value=$(read_config_value "$file" "$key" "$type")
-
-    if [[ -n $token_action ]]; then
-        local hardware_id="$read_value"
-        local url="https://eu.driver-backend.xronlinux.com/tokens/v1"
-        local message=""
-
-        if [[ "$token_action" == "request" || "$token_action" == "verify" ]] && ! command -v jq >/dev/null 2>&1; then
-            echo "Error: jq utility not found. Install jq to use this feature." >&2
-            exit 1
-        fi
-
-        if [ "$token_action" == "request" ]; then
-            postbody=$(jq -n \
-                                    --arg hardwareId "$hardware_id" \
-                                    --arg email "$token_arg" \
-                                    '{hardwareId: $hardwareId, email: $email}')
-            message=$(curl -s -X POST -H "Content-Type: application/json" -d "$postbody" "$url" | jq -r '.message')
-        elif [ "$token_action" == "verify" ]; then
-            postbody=$(jq -n \
-                                    --arg hardwareId "$hardware_id" \
-                                    --arg token "$token_arg" \
-                                    '{hardwareId: $hardwareId, token: $token}')
-            message=$(curl -s -X PUT -H "Content-Type: application/json" -d "$postbody" "$url" | jq -r '.message')
-        elif [ "$token_action" == "refresh" ]; then
-            echo "refresh_device_license=true" > /dev/shm/xr_driver_control
-            message="License refresh requested"
-        elif [ "$token_action" == "get" ]; then
-            message="$hardware_id"
-        fi
 
         if [ -n "$message" ]; then
             echo "$message"
@@ -184,10 +153,6 @@ Options:
     --opentrack-listener, --no-opentrack-listener
     --opentrack-listen-ip [ip]
     --opentrack-listen-port [port]
-    --metrics, --no-metrics
-    --request-token [email]
-    --verify-token [token]
-    --refresh-license
     --get-hardware-id"
 }
 
@@ -224,7 +189,7 @@ if [ -n "$1" ]; then
         esac
     done
 
-    PARSED=$(getopt -o hldesjm --long help,view-log,disable,enable,status,use-joystick,use-mouse,vr-lite-invert-x,no-vr-lite-invert-x,vr-lite-invert-y,no-vr-lite-invert-y,gamescope-reshade-wayland,no-gamescope-reshade-wayland,mouse-sensitivity:,look-ahead-ms:,deadzone-threshold-degrees:,debug:,display-size:,display-distance:,external-mode,disable-external,virtual-display,breezy-desktop,opentrack-app,sideview,sideview-position:,smooth-follow,no-smooth-follow,smooth-follow-threshold:,curved-display,no-curved-display,smooth-follow-track-roll,no-smooth-follow-track-roll,smooth-follow-track-pitch,no-smooth-follow-track-pitch,smooth-follow-track-yaw,no-smooth-follow-track-yaw,sbs-mode-stretched,no-sbs-mode-stretched,sbs-content-3d,no-sbs-content-3d,multi-tap,no-multi-tap,neck-saver-horizontal:,neck-saver-vertical:,opentrack-app-ip:,opentrack-app-port:,opentrack-listener,no-opentrack-listener,opentrack-listen-ip:,opentrack-listen-port:,metrics,no-metrics,request-token:,verify-token:,refresh-license,get-hardware-id -- "${normalized_args[@]}")
+    PARSED=$(getopt -o hldesjm --long help,view-log,disable,enable,status,use-joystick,use-mouse,vr-lite-invert-x,no-vr-lite-invert-x,vr-lite-invert-y,no-vr-lite-invert-y,gamescope-reshade-wayland,no-gamescope-reshade-wayland,mouse-sensitivity:,look-ahead-ms:,deadzone-threshold-degrees:,debug:,display-size:,display-distance:,external-mode,disable-external,virtual-display,breezy-desktop,opentrack-app,sideview,sideview-position:,smooth-follow,no-smooth-follow,smooth-follow-threshold:,curved-display,no-curved-display,smooth-follow-track-roll,no-smooth-follow-track-roll,smooth-follow-track-pitch,no-smooth-follow-track-pitch,smooth-follow-track-yaw,no-smooth-follow-track-yaw,sbs-mode-stretched,no-sbs-mode-stretched,sbs-content-3d,no-sbs-content-3d,multi-tap,no-multi-tap,neck-saver-horizontal:,neck-saver-vertical:,opentrack-app-ip:,opentrack-app-port:,opentrack-listener,no-opentrack-listener,opentrack-listen-ip:,opentrack-listen-port:,get-hardware-id -- "${normalized_args[@]}")
     if [ $? -ne 0 ]; then
         exit 1
     fi
@@ -452,28 +417,6 @@ if [ -n "$1" ]; then
                 ;;
             --no-multi-tap)
                 process_config "$default_config_file" "multi_tap_enabled" "false"
-                shift
-                ;;
-            --metrics)
-                process_config "$default_config_file" "metrics_disabled" "false"
-                shift
-                ;;
-            --no-metrics)
-                process_config "$default_config_file" "metrics_disabled" "true"
-                shift
-                ;;
-            --request-token)
-                require_arg "$1" "$2"
-                process_config "$state_config_file" "hardware_id" "" "string" "" "" "request" "$2"
-                shift 2
-                ;;
-            --verify-token)
-                require_arg "$1" "$2"
-                process_config "$state_config_file" "hardware_id" "" "string" "" "" "verify" "$2"
-                shift 2
-                ;;
-            --refresh-license)
-                process_config "$state_config_file" "hardware_id" "" "string" "" "" "refresh"
                 shift
                 ;;
             --get-hardware-id)

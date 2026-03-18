@@ -74,7 +74,6 @@ fi
 rm -rf $DATA_DIR
 rm -f $BIN_DIR/xrDriver
 rm -f $BIN_DIR/xr_driver_cli
-rm -f $BIN_DIR/xr_driver_verify
 rm -f $BIN_DIR/xr_driver_logs
 
 rm -f /tmp/shader_runtime_*
