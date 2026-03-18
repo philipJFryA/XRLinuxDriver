@@ -40,7 +40,7 @@ jobs:
     - name: Install required packages
       run: sudo apt install -y libusb-1.0-0-dev libudev-dev libcurl4-openssl-dev libevdev-dev libssl-dev libjson-c-dev libwayland-dev
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v6
 
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
