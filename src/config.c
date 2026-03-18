@@ -30,14 +30,11 @@ driver_config_type *default_config() {
     config->mouse_sensitivity = 30;
     config->output_mode = strdup(mouse_output_mode);
     config->multi_tap_enabled = false;
-    config->metrics_disabled = false;
-    config->dead_zone_threshold_deg = 0.0f;
 
     config->debug_threads = false;
     config->debug_joystick = false;
     config->debug_multi_tap = false;
     config->debug_ipc = false;
-    config->debug_license = false;
     config->debug_device = false;
     config->debug_connections = false;
 
@@ -106,9 +103,6 @@ driver_config_type* parse_config_file(FILE *fp) {
                 if (equal(token, "ipc")) {
                     config->debug_ipc = true;
                 }
-                if (equal(token, "license")) {
-                    config->debug_license = true;
-                }
                 if (equal(token, "device")) {
                     config->debug_device = true;
                 }
@@ -132,8 +126,6 @@ driver_config_type* parse_config_file(FILE *fp) {
             config->external_mode = strcmp(config->output_mode, external_only_output_mode) == 0;
         } else if (equal(key, "multi_tap_enabled")) {
             boolean_config(key, value, &config->multi_tap_enabled);
-        } else if (equal(key, "metrics_disabled")) {
-            boolean_config(key, value, &config->metrics_disabled);
         } else if (equal(key, "dead_zone_threshold_deg")) {
             float_config(key, value, &config->dead_zone_threshold_deg);
         }

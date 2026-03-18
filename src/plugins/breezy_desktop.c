@@ -1,5 +1,4 @@
 #include "devices.h"
-#include "features/breezy_desktop.h"
 #include "logging.h"
 #include "plugins.h"
 #include "plugins/breezy_desktop.h"
@@ -26,7 +25,6 @@
 
 const char* shared_mem_directory = "/dev/shm";
 const char* shared_mem_filename = "breezy_desktop_imu";
-const int breezy_desktop_feature_count = 1;
 static bool has_started = false;
 static pthread_mutex_t file_mutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -68,7 +66,7 @@ void breezy_desktop_handle_config_line_func(void* config, char* key, char* value
     breezy_desktop_config* temp_config = (breezy_desktop_config*) config;
 
     if (equal(key, "external_mode")) {
-        temp_config->enabled = list_string_contains("breezy_desktop", value) && is_productivity_granted();
+        temp_config->enabled = true;
     } else if (equal(key, "display_distance")) {
         float_config(key, value, &temp_config->display_distance);
     } else if (equal(key, "display_size")) {
