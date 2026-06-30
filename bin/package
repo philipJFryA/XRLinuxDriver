@@ -34,7 +34,8 @@ cp -r ./udev $PACKAGE_DIR
 if [ ! -d "$PACKAGE_DIR/lib" ]; then
   mkdir $PACKAGE_DIR/lib
 fi
-cp ./lib/$ARCH/*.so $PACKAGE_DIR/lib || true
+cp ./lib/$ARCH/*.so $PACKAGE_DIR/lib
+find ./lib/$ARCH/ -type f -name "*.so" -exec cp {} $PACKAGE_DIR/lib \;
 
 # bundle up the driver directory
 tar -zcvf xrDriver-$ARCH.tar.gz $PACKAGE_DIR
