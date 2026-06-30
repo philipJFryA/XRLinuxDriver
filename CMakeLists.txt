@@ -25,15 +25,6 @@ add_custom_target(run_python_script ALL
     COMMAND ${Python3_EXECUTABLE} ${py_cmd} ${custom_banner_yaml_file} ${custom_banner_header_file}
 )
 
-if(DEFINED ENV{UA_API_SECRET})
-  set(UA_API_SECRET $ENV{UA_API_SECRET})
-  message(STATUS "Using UA_API_SECRET from environment")
-  add_definitions(-DUA_API_SECRET="${UA_API_SECRET}")
-else()
-  set(UA_API_SECRET "")
-  message(STATUS "!!! UA_API_SECRET is NOT set")
-endif()
-
 find_package(Threads REQUIRED)
 
 pkg_check_modules(LIBUSB REQUIRED libusb-1.0)

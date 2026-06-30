@@ -57,7 +57,6 @@ Build outputs are written under `out/`.
 Notes:
 
 - The build runs in containers, so intermediate files under `build/` may be owned by root; the script cleans `build/` afterwards.
-- The build passes through `UA_API_SECRET` (and `UA_API_SECRET_INTENTIONALLY_EMPTY`) as environment variables when running containers.
 
 ## 3) Build distro packages (.deb / .rpm)
 

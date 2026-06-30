@@ -80,8 +80,6 @@ cp xr_driver_logs $BIN_DIR
 cp xr_driver_uninstall $OLD_BIN_DIR/xreal_driver_uninstall
 popd > /dev/null
 
-cp manifest $DATA_DIR
-
 echo "Copying the systemd service to ${SYSTEMD_USER_DIR}"
 sed -i -e "s/{user_home}/$ESCAPED_USER_HOME/g" \
   -e "s/{user}/$USER/g" \
