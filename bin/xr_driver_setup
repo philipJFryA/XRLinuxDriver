@@ -38,8 +38,8 @@ then
   local_dir_arg="$3"
 elif [ "$1" = "--tag" ] && [ -n "$2" ]
 then
-  binary_download_url="https://github.com/wheaney/XRLinuxDriver/releases/download/$2/xrDriver-$ARCH.tar.gz"
-  lib_download_url="https://github.com/wheaney/XRLinuxDriver/releases/download/$2/xrDriver-libs-$ARCH.tar.gz"
+  binary_download_url="https://github.com/philipJFryA/XRLinuxDriver/releases/download/$2/xrDriver-$ARCH.tar.gz"
+  lib_download_url="https://github.com/philipJFryA/XRLinuxDriver/releases/download/$2/xrDriver-libs-$ARCH.tar.gz"
 else
   local_dir_arg="$1"
 fi
