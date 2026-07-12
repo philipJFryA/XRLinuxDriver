@@ -97,10 +97,9 @@ process_config() {
 
         if [ -n "$message" ]; then
             echo "$message"
+        else
+            echo "$read_value"
         fi
-    else
-        echo "$read_value"
-    fi
 }
 
 require_arg() {
