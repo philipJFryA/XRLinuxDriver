@@ -52,7 +52,7 @@ systemctl --user is-active --quiet xr-driver && systemctl --user stop xr-driver
 
 echo "Copying shared libraries to ${DATA_DIR}/lib"
 mkdir -p $DATA_DIR/lib
-cp lib/* "$DATA_DIR/lib" 2>/dev/null || true
+cp -r lib/* "$DATA_DIR/lib" 2>/dev/null || true
 
 if [ -e "$USER_HOME/.xreal_driver_config" ]; then
   echo "Migrating config file to ${CONFIG_DIR}/config.ini"
@@ -66,7 +66,7 @@ fi
 
 # escaping sed replace: https://stackoverflow.com/questions/407523/escape-a-string-for-a-sed-replace-pattern
 ESCAPED_USER_HOME=$(printf '%s\n' "$USER_HOME" | sed -e 's/[\/&]/\\&/g')
-ESCAPED_LD_LIBRARY_PATH=$(printf '%s\n' "$DATA_DIR/lib" | sed -e 's/[\/&]/\\&/g')
+ESCAPED_LD_LIBRARY_PATH=$(printf '%s\n' "$DATA_DIR/lib:$DATA_DIR/lib/x86_64/viture" | sed -e 's/[\/&]/\\&/g')
 ESCAPED_BIN_DIR=$(printf '%s\n' "$BIN_DIR" | sed -e 's/[\/&]/\\&/g')
 
 echo "Copying driver binary and scripts to ${BIN_DIR} and ${DATA_DIR}"
