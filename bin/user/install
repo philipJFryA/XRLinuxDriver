@@ -54,6 +54,16 @@ echo "Copying shared libraries to ${DATA_DIR}/lib"
 mkdir -p $DATA_DIR/lib
 cp -r lib/* "$DATA_DIR/lib" 2>/dev/null || true
 
+echo "Creating library version symlinks for VITURE SDK OpenCV dependencies"
+if [ -d "$DATA_DIR/lib/x86_64/viture" ]; then
+  for f in "$DATA_DIR/lib/x86_64/viture"/*.so.4.2; do
+    [ -f "$f" ] || continue
+    basename=$(basename "$f")
+    # Create a symlink in the flat lib directory pointing to the actual file
+    ln -sf "x86_64/viture/$basename" "$DATA_DIR/lib/$basename"
+  done
+fi
+
 if [ -e "$USER_HOME/.xreal_driver_config" ]; then
   echo "Migrating config file to ${CONFIG_DIR}/config.ini"
   mv $USER_HOME/.xreal_driver_config $CONFIG_DIR/config.ini
@@ -66,7 +76,7 @@ fi
 
 # escaping sed replace: https://stackoverflow.com/questions/407523/escape-a-string-for-a-sed-replace-pattern
 ESCAPED_USER_HOME=$(printf '%s\n' "$USER_HOME" | sed -e 's/[\/&]/\\&/g')
-ESCAPED_LD_LIBRARY_PATH=$(printf '%s\n' "$DATA_DIR/lib:$DATA_DIR/lib/x86_64/viture" | sed -e 's/[\/&]/\\&/g')
+ESCAPED_LD_LIBRARY_PATH=$(printf '%s\n' "$DATA_DIR/lib" | sed -e 's/[\/&]/\\&/g')
 ESCAPED_BIN_DIR=$(printf '%s\n' "$BIN_DIR" | sed -e 's/[\/&]/\\&/g')
 
 echo "Copying driver binary and scripts to ${BIN_DIR} and ${DATA_DIR}"
