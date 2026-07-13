@@ -54,17 +54,6 @@ echo "Copying shared libraries to ${DATA_DIR}/lib"
 mkdir -p $DATA_DIR/lib
 cp -r lib/* "$DATA_DIR/lib" 2>/dev/null || true
 
-echo "Creating library version symlinks for VITURE SDK OpenCV dependencies"
-for viture_dir in "$DATA_DIR/lib"/*/viture; do
-  [ -d "$viture_dir" ] || continue
-  for f in "$viture_dir"/*.so; do
-    [ -f "$f" ] || continue
-    basename=$(basename "$f")
-    # Create a symlink with the .4.2 suffix in the flat lib dir
-    ln -sf "${viture_dir#$DATA_DIR/lib/}/$basename" "$DATA_DIR/lib/${basename}.4.2"
-  done
-done
-
 if [ -e "$USER_HOME/.xreal_driver_config" ]; then
   echo "Migrating config file to ${CONFIG_DIR}/config.ini"
   mv $USER_HOME/.xreal_driver_config $CONFIG_DIR/config.ini

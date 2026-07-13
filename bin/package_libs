@@ -25,6 +25,13 @@ for ARCH in "${ARCHITECTURES[@]}"; do
   cp ../lib/$ARCH/*.so* $PACKAGE_LIB_DIR || true
   cp ../lib/$ARCH/viture/*.so* $PACKAGE_LIB_DIR || true
 
+  echo "Creating .so.4.2 symlinks for viture shared libraries"
+  for f in "$PACKAGE_LIB_DIR"/*.so; do
+    [ -f "$f" ] || continue
+    basename=$(basename "$f")
+    ln -sf "$basename" "$PACKAGE_LIB_DIR/${basename}.4.2"
+  done
+
   LIB_ARTIFACT_NAME="xrDriver-libs-$ARCH.tar.gz"
   tar -zcvf $LIB_ARTIFACT_NAME $PACKAGE_LIB_DIR
 
@@ -38,3 +45,4 @@ mkdir -p out
 cp $BUILD_PATH/*.tar.gz out/
 
 rm -rf $BUILD_PATH
+
